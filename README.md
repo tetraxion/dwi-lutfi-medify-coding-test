@@ -190,20 +190,53 @@ dwi-lutfi-medify-coding-test/
 
 ---
 
-## 🧪 Jalankan Automated Testing
+## 🧪 Panduan Cara Pengujian Code (Automated Testing)
 
-Proyek ini telah dilengkapi dengan unit & feature testing. Dijalankan dengan *DatabaseTransactions* sehingga data pengembangan lokal tidak akan terhapus:
+Proyek ini telah dilengkapi dengan unit & feature testing komprehensif menggunakan PHPUnit dan trait `DatabaseTransactions` sehingga **data pengembangan lokal tidak akan terhapus saat testing dijalankan**.
+
+### 1. Jalankan Seluruh Test Suite
+Untuk mengeksekusi seluruh 8 test kasus sekaligus, jalankan perintah berikut di terminal:
 
 ```bash
 php artisan test
 ```
 
-**Hasil Pengujian:**
+atau menggunakan binary phpunit langsung:
+
+```bash
+./vendor/bin/phpunit
+```
+
+### 2. Jalankan Test Per-Modul / Spesifik Class
+
+- **Menguji Modul Master Items** (CRUD, Upload Foto, Filter Harga Min/Max, & Export Excel):
+  ```bash
+  php artisan test --filter MasterItemsTest
+  ```
+
+- **Menguji Modul Kategori Items** (CRUD Kategori, Search, Single View List Item, & Export PDF):
+  ```bash
+  php artisan test --filter KategoriItemsTest
+  ```
+
+### 3. Rincian Coverage Test Case (8/8 PASSED)
+
 ```text
 PASS  Tests\Unit\ExampleTest
+  ✓ that true is true
+
 PASS  Tests\Feature\ExampleTest
-PASS  Tests\Feature\KategoriItemsTest (3 tests)
-PASS  Tests\Feature\MasterItemsTest (3 tests)
+  ✓ the application returns a successful response
+
+PASS  Tests\Feature\KategoriItemsTest
+  ✓ can create and search kategori
+  ✓ single view displays attached items
+  ✓ can export kategori pdf
+
+PASS  Tests\Feature\MasterItemsTest
+  ✓ can create master item with photo and categories
+  ✓ price filter min and max search
+  ✓ can export master items excel
 
 Tests:  8 passed (100% Green)
 Time:   0.80s
