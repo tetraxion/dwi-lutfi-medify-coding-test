@@ -1,66 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dokumentasi Soal Tes Coding Medify
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dokumentasi resmi hasil pengerjaan **Soal Tes Coding Medify** yang dibangun berbasis framework Laravel dengan menerapkan prinsip OOP, Eloquent ORM, *Eager Loading*, dan *Automated Testing*.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Fitur Utama yang Diimplementasikan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Upload Foto pada CRUD Master Items
+- Penambahan kolom `foto` pada tabel `master_items`.
+- Fitur unggah gambar dengan *validation*, penanganan *storage link* (`storage:link`), dan penghapusan otomatis foto lama saat update/delete.
+- Tampilan thumbnail foto pada tabel index dan detail single item.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Perbaikan Bug Filter Harga Min dan Harga Max
+- Perbaikan logika kueri pada `MasterItemsController@search`. Filter `hargamin` dan `hargamax` dievaluasi secara independen sehingga dapat digunakan sendiri-sendiri maupun bersamaan tanpa menghasilkan data kosong/error.
+- Integrasi sinkronisasi DataTables AJAX realtime.
 
-## Learning Laravel
+### 3. Modul CRUD Kategori Items (Many-to-Many)
+- Skema database relasional: `kategori_items` (`kode`, `nama`) dan pivot table `kategori_item_master_item`.
+- Relasi Eloquent `belongsToMany` pada model `MasterItem` dan `KategoriItem`.
+- Halaman Index dengan filter pencarian berdasarkan Kode dan Nama Kategori.
+- Halaman Detail Single Kategori yang menampilkan informasi kategori dan **tabel daftar item** yang terhubung (*eager loading*).
+- Multi-select checkbox Kategori pada form tambah/edit Master Items.
+- Link navigasi cepat "Master Items" dan "Kategori Items" pada Navbar utama.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. Printout PDF Single Data Master Kategori
+- Integrasi package `barryvdh/laravel-dompdf`.
+- Fitur cetak PDF pada detail single kategori yang memuat Kode Kategori, Nama Kategori, Tabel Daftar Item terhubung, dan *timestamp* tanggal & waktu pencetak di bagian footer (`Dicetak pada: dd-mm-yyyy hh:mm:ss`).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 5. Download Export Excel Master Items
+- Fitur export Excel (`.csv` ber-encode UTF-8 BOM) yang kompatibel secara langsung dengan Microsoft Excel.
+- Memuat 7 kolom sesuai ketentuan:
+  1. `No`
+  2. `Nama kategori` (terpisah koma)
+  3. `Nama items`
+  4. `Nama supplier`
+  5. `Harga` (harga_beli)
+  6. `Laba` (%)
+  7. `Harga jual` (kalkulasi otomatis)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🛠️ Arsitektur & Best Practices
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **Eloquent Accessors**:
+  - `$item->harga_jual`: Kalkulasi otomatis `harga_beli + (harga_beli * laba / 100)`.
+  - `$item->foto_url`: Menghasilkan URL gambar dari storage disk public.
+  - `$item->nama_kategori_list`: Menghasilkan string nama kategori terpisah koma.
+- **Eager Loading**:
+  - Menggunakan `MasterItem::with('kategoriItems')` dan `KategoriItem::with('masterItems')` untuk performa query optimal (mencegah masalah N+1 query).
+- **Inheritance & Clean Code**:
+  - Penggunaan struktur Controller, Model, Migration, dan Blade template modular yang konsisten dengan tema Master Items yang sudah ada.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## 🚀 Panduan Instalasi & Penggunaan
 
-## Contributing
+1. **Clone Repository & Install Dependencies**:
+   ```bash
+   composer install
+   npm install
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Pengaturan Database (`.env`)**:
+   Sesuaikan konfigurasi database pada file `.env`.
 
-## Code of Conduct
+3. **Jalankan Migration & Seeder**:
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Buat Symlink Storage**:
+   ```bash
+   php artisan storage:link
+   ```
 
-## Security Vulnerabilities
+5. **Jalankan Server Development**:
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi dapat diakses melalui `http://127.0.0.1:8000`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧪 Pengujian Otomatis (Automated Testing)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Project ini dilengkapi dengan *Feature Testing* komprehensif menggunakan PHPUnit:
+
+Jalankan perintah pengujian:
+```bash
+php artisan test
+```
+
+### Coverage Pengujian (8/8 Passed):
+- `MasterItemsTest`:
+  - `test_can_create_master_item_with_photo_and_categories`
+  - `test_price_filter_min_and_max_search`
+  - `test_can_export_master_items_excel`
+- `KategoriItemsTest`:
+  - `test_can_create_and_search_kategori`
+  - `test_single_view_displays_attached_items`
+  - `test_can_export_kategori_pdf`
+
+---
+
+## 📄 Ringkasan Route Utama
+
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `GET` | `/master-items` | Index Master Items |
+| `GET` | `/master-items/search` | AJAX Search & Filter Harga |
+| `GET` | `/master-items/export-excel` | Download Export Excel Master Items |
+| `GET` | `/kategori-items` | Index Kategori Items |
+| `GET` | `/kategori-items/search` | AJAX Search Kategori |
+| `GET` | `/kategori-items/view/{id}` | Detail Single Kategori + List Items |
+| `GET` | `/kategori-items/export-pdf/{id}` | Download Export PDF Single Kategori |
