@@ -99,13 +99,13 @@ class MasterItemsController extends Controller
 
         $data_item->kategoriItems()->sync($request->categories ?? []);
 
-        return redirect('master-items');
+        return redirect('master-items')->with('success', 'Master Item berhasil disimpan!');
     }
 
     public function delete($id)
     {
         MasterItem::findOrFail($id)->delete();
-        return redirect('master-items');
+        return redirect('master-items')->with('success', 'Master Item berhasil dihapus!');
     }
 
     public function exportExcel()

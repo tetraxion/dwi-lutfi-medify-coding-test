@@ -69,7 +69,7 @@ class KategoriItemsController extends Controller
         $kategori->nama = $request->nama;
         $kategori->save();
 
-        return redirect('kategori-items');
+        return redirect('kategori-items')->with('success', 'Kategori Item berhasil disimpan!');
     }
 
     public function singleView($id)
@@ -83,7 +83,7 @@ class KategoriItemsController extends Controller
     public function delete($id)
     {
         KategoriItem::find($id)->delete();
-        return redirect('kategori-items');
+        return redirect('kategori-items')->with('success', 'Kategori Item berhasil dihapus!');
     }
 
     public function exportPdf($id)
