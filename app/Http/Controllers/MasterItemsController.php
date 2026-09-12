@@ -23,17 +23,17 @@ class MasterItemsController extends Controller
 
         $data_search = MasterItem::with('kategoriItems');
 
-        if (!empty($kode)) {
-            $data_search = $data_search->where('kode', 'LIKE', '%' . $kode . '%');
+        if ($request->filled('kode')) {
+            $data_search->where('kode', 'LIKE', '%' . $kode . '%');
         }
-        if (!empty($nama)) {
-            $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
+        if ($request->filled('nama')) {
+            $data_search->where('nama', 'LIKE', '%' . $nama . '%');
         }
-        if ($hargamin !== null && $hargamin !== '') {
-            $data_search = $data_search->where('harga_beli', '>=', (int)$hargamin);
+        if ($request->filled('hargamin')) {
+            $data_search->where('harga_beli', '>=', (int)$hargamin);
         }
-        if ($hargamax !== null && $hargamax !== '') {
-            $data_search = $data_search->where('harga_beli', '<=', (int)$hargamax);
+        if ($request->filled('hargamax')) {
+            $data_search->where('harga_beli', '<=', (int)$hargamax);
         }
 
         $data_search = $data_search->orderBy('id')->get();

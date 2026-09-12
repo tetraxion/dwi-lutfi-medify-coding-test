@@ -20,11 +20,11 @@ class KategoriItemsController extends Controller
 
         $data_search = KategoriItem::query();
 
-        if (!empty($kode)) {
-            $data_search = $data_search->where('kode', 'LIKE', '%' . $kode . '%');
+        if ($request->filled('kode')) {
+            $data_search->where('kode', 'LIKE', '%' . $kode . '%');
         }
-        if (!empty($nama)) {
-            $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
+        if ($request->filled('nama')) {
+            $data_search->where('nama', 'LIKE', '%' . $nama . '%');
         }
 
         $data = $data_search->orderBy('id')->get();
