@@ -130,12 +130,33 @@
                 
                 Swal.fire({
                     title: 'Export ke Excel?',
-                    text: 'Apakah Anda ingin mengunduh data Master Items dalam format Excel?',
+                    text: 'Apakah Anda ingin mengunduh data Master Items dalam format Excel (.xls)?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#10b981',
                     cancelButtonColor: '#64748b',
                     confirmButtonText: 'Ya, Export Excel!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            const btnExportCsv = e.target.closest('.btn-export-csv');
+            if (btnExportCsv) {
+                e.preventDefault();
+                const url = btnExportCsv.getAttribute('href');
+                
+                Swal.fire({
+                    title: 'Export ke CSV?',
+                    text: 'Apakah Anda ingin mengunduh data Master Items dalam format CSV?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0ea5e9',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Export CSV!',
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {

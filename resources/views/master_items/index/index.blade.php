@@ -13,9 +13,23 @@
                     <a href="{{url('master-items/form/new')}}" class="btn btn-secondary btn-sm">
                         <i class="bi bi-plus-lg"></i> Item Baru
                     </a>
-                    <a href="{{url('master-items/export-excel')}}" class="btn btn-success btn-sm btn-export-excel">
-                        <i class="bi bi-file-earmark-excel"></i> Export Excel
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-success btn-sm dropdown-toggle fw-semibold" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-download me-1"></i> Export Data
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="exportDropdown">
+                            <li>
+                                <a class="dropdown-item py-2 btn-export-excel" href="{{url('master-items/export-excel')}}">
+                                    <i class="bi bi-file-earmark-excel text-success me-2 fs-6"></i> Export Excel (.xls)
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 btn-export-csv" href="{{url('master-items/export-csv')}}">
+                                    <i class="bi bi-filetype-csv text-info me-2 fs-6"></i> Export CSV (.csv)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
