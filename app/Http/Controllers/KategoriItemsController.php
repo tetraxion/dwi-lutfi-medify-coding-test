@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class KategoriItemsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         return view('kategori_items.index.index');

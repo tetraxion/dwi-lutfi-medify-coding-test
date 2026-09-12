@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class MasterItemsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         return view('master_items.index.index');
