@@ -2,7 +2,7 @@
 
 [![Laravel](https://img.shields.io/badge/Laravel-9.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![PHPUnit](https://img.shields.io/badge/PHPUnit-8%2F8%20Passed-2496ED?style=for-the-badge&logo=php&logoColor=white)](https://phpunit.de)
+[![PHPUnit](https://img.shields.io/badge/PHPUnit-14%2F14%20Passed-2496ED?style=for-the-badge&logo=php&logoColor=white)](https://phpunit.de)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.x-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
 
 Dokumentasi lengkap implementasi sistem **Master Items & Kategori Items** untuk Medify Coding Test. Proyek ini dibangun menggunakan framework **Laravel 9** dengan menerapkan prinsip-prinsip **OOP, Eloquent ORM, Many-to-Many Relationships, Eager Loading, SweetAlert2 UX, dan Automated Testing**.
@@ -72,6 +72,7 @@ dwi-lutfi-medify-coding-test/
 │   └── app/public/items/                       # Direktori Penyimpanan Foto Upload Item
 └── tests/
     └── Feature/
+        ├── AuthenticationTest.php               # Test suite Render, Login, Register, Logout
         ├── MasterItemsTest.php                  # Test suite CRUD, Foto, Filter, Excel Export
         └── KategoriItemsTest.php                # Test suite CRUD Kategori, Search, PDF Export
 ```
@@ -126,6 +127,12 @@ dwi-lutfi-medify-coding-test/
 - **Konfirmasi Export Excel**: SweetAlert2 Modal Question sebelum mengunduh Excel (`.btn-export-excel`).
 - **Konfirmasi Export PDF**: SweetAlert2 Modal Question sebelum mengunduh PDF (`.btn-export-pdf`).
 - **Toast Notifications**: Notifikasi pop-up otomatis setelah berhasil melakukan operasi CRUD.
+
+### 7. Otentikasi, Brand Logo & Password Eye Toggle
+- **Keamanan Route**: Proteksi route `MasterItemsController` & `KategoriItemsController` dengan `$this->middleware('auth')`.
+- **Navbar Autentikasi**: Navbar disembunyikan secara kondisional jika user belum login (`@auth` wrapper) agar tampilan login/register bersih.
+- **Brand Logo Header**: Menampilkan logo resmi (`public/images/logo.jpg`) pada header card login, register, dan navbar.
+- **Password Eye Icon Toggle**: Tombol mata interaktif toggle tampilkan/sembunyikan karakter password (`bi bi-eye` / `bi bi-eye-slash`) pada form login & register.
 
 ---
 
@@ -195,7 +202,7 @@ dwi-lutfi-medify-coding-test/
 Proyek ini telah dilengkapi dengan unit & feature testing komprehensif menggunakan PHPUnit dan trait `DatabaseTransactions` sehingga **data pengembangan lokal tidak akan terhapus saat testing dijalankan**.
 
 ### 1. Jalankan Seluruh Test Suite
-Untuk mengeksekusi seluruh 8 test kasus sekaligus, jalankan perintah berikut di terminal:
+Untuk mengeksekusi seluruh 14 test kasus sekaligus, jalankan perintah berikut di terminal:
 
 ```bash
 php artisan test
@@ -209,6 +216,11 @@ atau menggunakan binary phpunit langsung:
 
 ### 2. Jalankan Test Per-Modul / Spesifik Class
 
+- **Menguji Modul Otentikasi** (Render Login, Authenticate, Invalid Password, Render Register, Register User Baru, Logout):
+  ```bash
+  php artisan test --filter AuthenticationTest
+  ```
+
 - **Menguji Modul Master Items** (CRUD, Upload Foto, Filter Harga Min/Max, & Export Excel):
   ```bash
   php artisan test --filter MasterItemsTest
@@ -219,11 +231,19 @@ atau menggunakan binary phpunit langsung:
   php artisan test --filter KategoriItemsTest
   ```
 
-### 3. Rincian Coverage Test Case (8/8 PASSED)
+### 3. Rincian Coverage Test Case (14/14 PASSED)
 
 ```text
 PASS  Tests\Unit\ExampleTest
   ✓ that true is true
+
+PASS  Tests\Feature\AuthenticationTest
+  ✓ login screen can be rendered
+  ✓ users can authenticate using the login screen
+  ✓ users can not authenticate with invalid password
+  ✓ register screen can be rendered
+  ✓ new users can register
+  ✓ users can logout
 
 PASS  Tests\Feature\ExampleTest
   ✓ the application returns a successful response
@@ -238,6 +258,6 @@ PASS  Tests\Feature\MasterItemsTest
   ✓ price filter min and max search
   ✓ can export master items excel
 
-Tests:  8 passed (100% Green)
-Time:   0.80s
+Tests:  14 passed (100% Green)
+Time:   1.14s
 ```
