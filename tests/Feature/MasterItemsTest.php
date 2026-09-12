@@ -96,6 +96,7 @@ class MasterItemsTest extends TestCase
     {
         $response = $this->get('/master-items/export-excel');
         $response->assertStatus(200);
-        $response->assertHeader('content-type', 'text/csv; charset=UTF-8');
+        $response->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8');
+        $response->assertSee('LAPORAN DATA MASTER ITEMS');
     }
 }
