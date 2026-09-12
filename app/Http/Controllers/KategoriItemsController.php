@@ -45,7 +45,7 @@ class KategoriItemsController extends Controller
         if ($method == 'new') {
             $kategori = new KategoriItem();
         } else {
-            $kategori = KategoriItem::find($id);
+            $kategori = KategoriItem::findOrFail($id);
         }
 
         $data['kategori'] = $kategori;
@@ -65,7 +65,7 @@ class KategoriItemsController extends Controller
             }
             $kategori->kode = $kode;
         } else {
-            $kategori = KategoriItem::find($id);
+            $kategori = KategoriItem::findOrFail($id);
             if ($request->filled('kode')) {
                 $kategori->kode = $request->kode;
             }
@@ -87,7 +87,7 @@ class KategoriItemsController extends Controller
 
     public function delete($id)
     {
-        KategoriItem::find($id)->delete();
+        KategoriItem::findOrFail($id)->delete();
         return redirect('kategori-items')->with('success', 'Kategori Item berhasil dihapus!');
     }
 

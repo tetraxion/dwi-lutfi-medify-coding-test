@@ -25,7 +25,7 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">
-                                <i class="bi bi-envelope me-1"></i>{{ __('Email Address') }}
+                                {{ __('Email Address') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
@@ -40,7 +40,7 @@
 
                         <div class="mb-3">
                             <label for="password" class="form-label">
-                                <i class="bi bi-lock me-1"></i>{{ __('Password') }}
+                                {{ __('Password') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
@@ -105,7 +105,7 @@
             togglePassword.addEventListener('click', function () {
                 const isPassword = passwordInput.getAttribute('type') === 'password';
                 passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-                
+
                 if (isPassword) {
                     eyeIcon.classList.remove('bi-eye');
                     eyeIcon.classList.add('bi-eye-slash');
