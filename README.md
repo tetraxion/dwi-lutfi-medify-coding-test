@@ -2,7 +2,7 @@
 
 [![Laravel](https://img.shields.io/badge/Laravel-9.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![PHPUnit](https://img.shields.io/badge/PHPUnit-14%2F14%20Passed-2496ED?style=for-the-badge&logo=php&logoColor=white)](https://phpunit.de)
+[![PHPUnit](https://img.shields.io/badge/PHPUnit-15%2F15%20Passed-2496ED?style=for-the-badge&logo=php&logoColor=white)](https://phpunit.de)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.x-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
 
 Dokumentasi lengkap implementasi sistem **Master Items & Kategori Items** untuk Medify Coding Test. Proyek ini dibangun menggunakan framework **Laravel 9** dengan menerapkan prinsip-prinsip **OOP, Eloquent ORM, Many-to-Many Relationships, Eager Loading, SweetAlert2 UX, dan Automated Testing**.
@@ -101,12 +101,42 @@ dwi-lutfi-medify-coding-test/
 
 ## 📌 Rincian Fitur Utama
 
-### 1. Upload Foto pada CRUD Master Items
+### 1. **Sistem Autentifikasi & Keamanan** 🔐
+**Login & Register dengan Modern UI:**
+- Design card modern dengan shadow & gradient
+- Bootstrap Icons untuk visual appeal
+- SweetAlert2 untuk notifikasi error & success
+- Success message personalisasi: "Selamat datang, {nama}!"
+- Link navigasi antar halaman login/register
+
+**Security Features:**
+- ✅ **Route Protection**: Semua routes Master Items & Kategori dilindungi middleware `auth`
+- ✅ **CSRF Protection**: Form POST dengan `@csrf` token
+- ✅ **Session Security**: Session encrypted, lifetime 8 jam (480 menit)
+- ✅ **Brute Force Protection**: Login throttling 5 attempts/3 minutes lockout
+- ✅ **Secure Delete**: Method POST untuk delete dengan CSRF protection (bukan GET)
+- ✅ **Logout Confirmation**: SweetAlert confirmation sebelum logout
+- ✅ **Session Invalidation**: Proper logout dengan session destroy
+
+**Password & Authentication:**
+- Password minimal 8 karakter dengan confirmation
+- Remember me functionality
+- Auto redirect ke intended page setelah login
+- Personalized logout message: "Sampai jumpa, {nama}!"
+
+### 2. Upload Foto pada CRUD Master Items
 - Mendukung unggah gambar item (`.jpg`, `.jpeg`, `.png`, `.webp`).
 - Penanganan otomatis pembuatan file unik dan pembersihan foto lama saat update/delete.
 - Accessor Eloquent `$item->foto_url` untuk mendapatkan URL publik secara fleksibel.
 
-### 2. Fitur Filter Harga Min dan Harga Max (Bug Fixed)
+### 2. Upload Foto pada CRUD Master Items
+- Mendukung unggah gambar item (`.jpg`, `.jpeg`, `.png`, `.webp`).
+- Penanganan otomatis pembuatan file unik dan pembersihan foto lama saat update/delete.
+- Accessor Eloquent `$item->foto_url` untuk mendapatkan URL publik secara fleksibel.
+- Preview foto existing saat edit item.
+- Display foto di single view dengan fallback "No Image" jika kosong.
+
+### 3. Fitur Filter Harga Min dan Harga Max (Bug Fixed)
 - Kueri diperbaiki pada `MasterItemsController@search` menggunakan `$request->filled()`.
 - Filter `hargamin` (>=) dan `hargamax` (<=) bekerja secara mandiri maupun bersamaan tanpa menghasilkan error data kosong.
 
@@ -120,9 +150,9 @@ dwi-lutfi-medify-coding-test/
 - Mencetak detail Kategori, Kode Kategori, Tabel Daftar Item terhubung, dan Footer tanggal/waktu pencetakan (`Dicetak pada: dd-mm-yyyy hh:mm:ss`).
 - Dilengkapi konfirmasi SweetAlert2 modal sebelum mengunduh PDF.
 
-### 5. Export Excel Master Items (Styled Spreadsheet)
-- Mengunduh data dalam format Spreadsheet Excel (`.xls`) profesional dengan desain bermerek.
-- **Styling Premium**: Header banner dark slate (`#1e293b`), timestamp pencetakan, zebra striping baris (`#f8fafc`), format mata uang Rupiah (`Rp 15.000`), persen laba (`20%`), border rapi, & baris **Total Keseluruhan** di bagian footer.
+### 5. Dual Export Master Items (Excel & CSV)
+- **Export Excel (`.xls`)**: Format Spreadsheet Excel profesional dengan header dark slate (`#1e293b`), timestamp pencetakan, zebra striping baris (`#f8fafc`), format mata uang Rupiah (`Rp 15.000`), persen laba (`20%`), & baris **TOTAL KESELURUHAN** footer.
+- **Export CSV (`.csv`)**: Format CSV UTF-8 BOM murni untuk pengolahan data cepat dan kompatibilitas sistem eksternal.
 - Memuat 7 kolom sesuai ketentuan:
   1. `No`
   2. `Nama kategori` (terpisah koma)
@@ -135,6 +165,7 @@ dwi-lutfi-medify-coding-test/
 ### 6. Interactive SweetAlert2 UX Feedback
 - **Konfirmasi Hapus**: SweetAlert2 Warning Modal saat mengklik tombol Hapus (`.btn-confirm-delete`).
 - **Konfirmasi Export Excel**: SweetAlert2 Modal Question sebelum mengunduh Excel (`.btn-export-excel`).
+- **Konfirmasi Export CSV**: SweetAlert2 Modal Question sebelum mengunduh CSV (`.btn-export-csv`).
 - **Konfirmasi Export PDF**: SweetAlert2 Modal Question sebelum mengunduh PDF (`.btn-export-pdf`).
 - **Toast Notifications**: Notifikasi pop-up otomatis setelah berhasil melakukan operasi CRUD.
 
@@ -155,14 +186,15 @@ dwi-lutfi-medify-coding-test/
 | `GET` | `/master-items/form/{method}/{id?}` | Form View Create / Edit Item |
 | `POST` | `/master-items/form/{method}/{id?}` | Submit Create / Edit Item + Foto + Kategori Sync |
 | `GET` | `/master-items/view/{kode}` | Single View Detail Item |
-| `GET` | `/master-items/delete/{id}` | Soft Delete Master Item |
-| `GET` | `/master-items/export-excel` | Export Data Master Items ke Excel |
+| `POST` | `/master-items/delete/{id}` | Soft Delete Master Item |
+| `GET` | `/master-items/export-excel` | Export Data Master Items ke Excel (.xls) |
+| `GET` | `/master-items/export-csv` | Export Data Master Items ke CSV (.csv) |
 | `GET` | `/kategori-items` | Halaman Index Kategori Items |
 | `GET` | `/kategori-items/search` | AJAX Search Kategori |
 | `GET` | `/kategori-items/form/{method}/{id?}` | Form View Create / Edit Kategori |
 | `POST` | `/kategori-items/form/{method}/{id?}` | Submit Create / Edit Kategori |
 | `GET` | `/kategori-items/view/{id}` | Single View Kategori + List Item Terhubung |
-| `GET` | `/kategori-items/delete/{id}` | Soft Delete Kategori |
+| `POST` | `/kategori-items/delete/{id}` | Soft Delete Kategori |
 | `GET` | `/kategori-items/export-pdf/{id}` | Export Laporan Single Kategori ke PDF |
 
 ---
@@ -231,7 +263,7 @@ atau menggunakan binary phpunit langsung:
   php artisan test --filter AuthenticationTest
   ```
 
-- **Menguji Modul Master Items** (CRUD, Upload Foto, Filter Harga Min/Max, & Export Excel):
+- **Menguji Modul Master Items** (CRUD, Upload Foto, Filter Harga Min/Max, Export Excel, & Export CSV):
   ```bash
   php artisan test --filter MasterItemsTest
   ```
@@ -241,7 +273,7 @@ atau menggunakan binary phpunit langsung:
   php artisan test --filter KategoriItemsTest
   ```
 
-### 3. Rincian Coverage Test Case (14/14 PASSED)
+### 3. Rincian Coverage Test Case (15/15 PASSED)
 
 ```text
 PASS  Tests\Unit\ExampleTest
@@ -267,7 +299,8 @@ PASS  Tests\Feature\MasterItemsTest
   ✓ can create master item with photo and categories
   ✓ price filter min and max search
   ✓ can export master items excel
+  ✓ can export master items csv
 
-Tests:  14 passed (100% Green)
-Time:   1.14s
+Tests:  15 passed (100% Green)
+Time:   1.35s
 ```
