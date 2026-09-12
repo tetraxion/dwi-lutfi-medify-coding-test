@@ -77,7 +77,7 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); confirmLogout();">
                                     <i class="bi bi-box-arrow-right me-1"></i> {{ __('Logout') }}
                                 </a>
 
@@ -116,6 +116,24 @@
                 confirmButtonColor: '#ef4444'
             });
         @endif
+
+        // Logout confirmation with SweetAlert
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari aplikasi?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
 
         document.addEventListener('click', function(e) {
             const btnExportExcel = e.target.closest('.btn-export-excel');
@@ -163,7 +181,7 @@
             const btn = e.target.closest('.btn-confirm-delete');
             if (btn) {
                 e.preventDefault();
-                const url = btn.getAttribute('href');
+                const form = btn.closest('form');
                 
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
@@ -176,7 +194,9 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = url;
+                        if (form) {
+                            form.submit();
+                        }
                     }
                 });
             }

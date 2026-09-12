@@ -15,9 +15,12 @@
                     <a class="btn btn-info btn-sm text-white" href="{{url('kategori-items/form/edit')}}/{{$kategori->id}}">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <a class="btn btn-danger btn-sm btn-confirm-delete" href="{{url('kategori-items/delete')}}/{{$kategori->id}}">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
+                    <form method="POST" action="{{route('kategori-items.delete', $kategori->id)}}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger btn-sm btn-confirm-delete">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
                 </div>
             </div>
 
