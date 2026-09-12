@@ -116,34 +116,21 @@ class MasterItemsController extends Controller
     public function exportExcel()
     {
         $items = MasterItem::with('kategoriItems')->orderBy('id')->get();
+        $export_datetime = date('d-m-Y H:i:s');
+        $filename = 'master_items_' . date('Ymd_His') . '.xls';
 
         $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="master_items_' . date('Ymd_His') . '.csv"',
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'max-age=0',
         ];
 
-        $callback = function () use ($items) {
-            $file = fopen('php://output', 'w');
-            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        $content = view('master_items.excel.template', [
+            'items' => $items,
+            'export_datetime' => $export_datetime,
+        ])->render();
 
-            fputcsv($file, ['No', 'Nama kategori', 'Nama items', 'Nama supplier', 'Harga', 'Laba', 'Harga jual']);
-
-            foreach ($items as $index => $item) {
-                fputcsv($file, [
-                    $index + 1,
-                    $item->nama_kategori_list,
-                    $item->nama,
-                    $item->supplier,
-                    $item->harga_beli,
-                    $item->laba . '%',
-                    $item->harga_jual,
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->streamDownload($callback, 'master_items_' . date('Ymd_His') . '.csv', $headers);
+        return response($content, 200, $headers);
     }
 
     public function updateRandomData()
