@@ -13,21 +13,20 @@
             searching: false,
             order: [[0, 'desc']],
         });
-        getData()
+        getData();
     });
 
     $('.btn-get-data').click(function() {
-        getData()
-    })
+        getData();
+    });
 
     function getData(){
-        
         $('#loading-filter').show();
         var dataTableObj = $('#table').DataTable();
-        var filter_kode = $('#filter-kode').val()
-        var filter_nama = $('#filter-nama').val()
-        var filter_harga_min = $('#filter-harga-min').val()
-        var filter_harga_max = $('#filter-harga-max').val()
+        var filter_kode = $('#filter-kode').val();
+        var filter_nama = $('#filter-nama').val();
+        var filter_harga_min = $('#filter-harga-min').val();
+        var filter_harga_max = $('#filter-harga-max').val();
         dataTableObj.clear().draw();
 
         $.ajax({
@@ -35,28 +34,44 @@
             dataType: 'json',
             tryCount: 0,
             retryLimit: 3,
-            data: 'kode=' + filter_kode + '&nama=' + filter_nama + '&hargamin=' + filter_harga_min + '&hargamax=' + filter_harga_max,
+            data: 'kode=' + encodeURIComponent(filter_kode) + 
+                  '&nama=' + encodeURIComponent(filter_nama) + 
+                  '&hargamin=' + encodeURIComponent(filter_harga_min) + 
+                  '&hargamax=' + encodeURIComponent(filter_harga_max),
             success: function(results) {
-                var data = results.data
+                var data = results.data;
 
                 $.each(data, function(index, item) {
-                    array_temp = [];
-                    var harga_jual = item.harga_beli + item.harga_beli * item.laba / 100;
-                    harga_jual = Math.round(harga_jual)
+                    var harga_jual = Math.round(item.harga_beli + (item.harga_beli * item.laba / 100));
                     var kode = item.kode;
 
-                    var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`
+                    var fotoHtml = item.foto 
+                        ? `<img src="{{asset('storage')}}/${item.foto}" width="50" height="50" class="img-thumbnail" style="object-fit:cover;">`
+                        : `<span class="badge bg-secondary">No Image</span>`;
 
-                    $.each(item, function(obj_name, obj_value) {
-                        if (obj_name == 'laba') return false;
-                        array_temp.push(obj_value)
-                    })
-                    array_temp.push(harga_jual)
-                    array_temp.push(item.supplier)
-                    array_temp.push(html)
+                    var categories = [];
+                    if (item.kategori_items && item.kategori_items.length > 0) {
+                        $.each(item.kategori_items, function(i, kat) {
+                            categories.push(kat.nama);
+                        });
+                    }
+                    var kategoriStr = categories.length > 0 ? categories.join(', ') : '-';
 
+                    var actionBtn = `<a href="{{url('master-items/view/')}}/${kode}" class="btn btn-primary btn-sm">View</a>`;
 
-                    dataTableObj.row.add(array_temp).draw(true);
+                    var rowData = [
+                        item.kode,
+                        item.nama,
+                        fotoHtml,
+                        kategoriStr,
+                        item.jenis,
+                        item.harga_beli,
+                        harga_jual,
+                        item.supplier,
+                        actionBtn
+                    ];
+
+                    dataTableObj.row.add(rowData).draw(true);
                 });
                 $('#loading-filter').hide();
             },
@@ -66,11 +81,9 @@
                     $.ajax(this);
                     return;
                 }
-                alert('Terjadi kesalahan server, tidak dapat mengambil data')
+                alert('Terjadi kesalahan server, tidak dapat mengambil data');
                 $('#loading-filter').hide();
-
-                return;
             }
-        })
+        });
     }
 </script>
