@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KategoriItem;
 use App\Models\MasterItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MasterItemsController extends Controller
 {
@@ -19,16 +21,24 @@ class MasterItemsController extends Controller
         $hargamin = $request->hargamin;
         $hargamax = $request->hargamax;
 
-        $data_search = MasterItem::query();
+        $data_search = MasterItem::with('kategoriItems');
 
-        if (!empty($kode)) $data_search = $data_search->where('kode', $kode);
-        if (!empty($nama)) $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
-        if (!empty($hargamin)) $data_search = $data_search->where('harga_beli', '>=', $hargamin)->where('harga_beli', '<=', $hargamax);
+        if (!empty($kode)) {
+            $data_search = $data_search->where('kode', $kode);
+        }
+        if (!empty($nama)) {
+            $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
+        }
+        if ($hargamin !== null && $hargamin !== '') {
+            $data_search = $data_search->where('harga_beli', '>=', (int)$hargamin);
+        }
+        if ($hargamax !== null && $hargamax !== '') {
+            $data_search = $data_search->where('harga_beli', '<=', (int)$hargamax);
+        }
 
-        $data_search = $data_search->select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier')->orderBy('id')->get();
+        $data_search = $data_search->orderBy('id')->get();
 
-
-        return json_encode([
+        return response()->json([
             'status' => 200,
             'data' => $data_search
         ]);
@@ -37,18 +47,26 @@ class MasterItemsController extends Controller
     public function formView($method, $id = 0)
     {
         if ($method == 'new') {
-            $item = [];
+            $item = new MasterItem();
+            $selected_categories = [];
         } else {
-            $item = MasterItem::find($id);
+            $item = MasterItem::with('kategoriItems')->findOrFail($id);
+            $selected_categories = $item->kategoriItems->pluck('id')->toArray();
         }
+
+        $categories = KategoriItem::orderBy('nama')->get();
+
         $data['item'] = $item;
         $data['method'] = $method;
+        $data['categories'] = $categories;
+        $data['selected_categories'] = $selected_categories;
+
         return view('master_items.form.index', $data);
     }
 
     public function singleView($kode)
     {
-        $data['data'] = MasterItem::where('kode', $kode)->first();
+        $data['data'] = MasterItem::with('kategoriItems')->where('kode', $kode)->firstOrFail();
         return view('master_items.single.index', $data);
     }
 
@@ -56,13 +74,19 @@ class MasterItemsController extends Controller
     {
         if ($method == 'new') {
             $data_item = new MasterItem;
-            $kode = MasterItem::count('id');
-            $kode = $kode + 1;
-            $kode = str_pad($kode, 5, '0', STR_PAD_LEFT);
-            sleep(3);
+            $count = MasterItem::withTrashed()->count() + 1;
+            $kode = str_pad($count, 5, '0', STR_PAD_LEFT);
         } else {
-            $data_item = MasterItem::find($id);
+            $data_item = MasterItem::findOrFail($id);
             $kode = $data_item->kode;
+        }
+
+        if ($request->hasFile('foto')) {
+            if ($data_item->foto && Storage::disk('public')->exists($data_item->foto)) {
+                Storage::disk('public')->delete($data_item->foto);
+            }
+            $path = $request->file('foto')->store('items', 'public');
+            $data_item->foto = $path;
         }
 
         $data_item->nama = $request->nama;
@@ -73,25 +97,58 @@ class MasterItemsController extends Controller
         $data_item->jenis = $request->jenis;
         $data_item->save();
 
+        $data_item->kategoriItems()->sync($request->categories ?? []);
+
         return redirect('master-items');
     }
 
     public function delete($id)
     {
-        MasterItem::find($id)->delete();
+        MasterItem::findOrFail($id)->delete();
         return redirect('master-items');
+    }
+
+    public function exportExcel()
+    {
+        $items = MasterItem::with('kategoriItems')->orderBy('id')->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="master_items_' . date('Ymd_His') . '.csv"',
+        ];
+
+        $callback = function () use ($items) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, ['No', 'Nama kategori', 'Nama items', 'Nama supplier', 'Harga', 'Laba', 'Harga jual']);
+
+            foreach ($items as $index => $item) {
+                fputcsv($file, [
+                    $index + 1,
+                    $item->nama_kategori_list,
+                    $item->nama,
+                    $item->supplier,
+                    $item->harga_beli,
+                    $item->laba . '%',
+                    $item->harga_jual,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, 'master_items_' . date('Ymd_His') . '.csv', $headers);
     }
 
     public function updateRandomData()
     {
         $data = MasterItem::get();
-        foreach($data as $item)
-        {
-            $kode = $item->id;
-            $kode = str_pad($kode, 5, '0', STR_PAD_LEFT);
+        foreach ($data as $item) {
+            $kode = str_pad($item->id, 5, '0', STR_PAD_LEFT);
 
-            $item->harga_beli = rand(100,1000000);
-            $item->laba = rand(10,99);
+            $item->harga_beli = rand(100, 1000000);
+            $item->laba = rand(10, 99);
             $item->kode = $kode;
             $item->supplier = $this->getRandomSupplier();
             $item->jenis = $this->getRandomJenis();
@@ -101,15 +158,13 @@ class MasterItemsController extends Controller
 
     private function getRandomSupplier()
     {
-        $array = ['Tokopaedi','Bukulapuk','TokoBagas','E Commurz','Blublu'];
-        $random = rand(0,4);
-        return $array[$random];
+        $array = ['Tokopaedi', 'Bukulapuk', 'TokoBagas', 'E Commurz', 'Blublu'];
+        return $array[rand(0, 4)];
     }
 
     private function getRandomJenis()
     {
-        $array = ['Obat','Alkes','Matkes','Umum','ATK'];
-        $random = rand(0,4);
-        return $array[$random];
+        $array = ['Obat', 'Alkes', 'Matkes', 'Umum', 'ATK'];
+        return $array[rand(0, 4)];
     }
 }
