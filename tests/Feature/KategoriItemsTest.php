@@ -7,9 +7,18 @@ use App\Models\MasterItem;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
+use App\Models\User;
+
 class KategoriItemsTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
 
     public function test_can_create_and_search_kategori()
     {

@@ -9,9 +9,18 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
+use App\Models\User;
+
 class MasterItemsTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
 
     public function test_can_create_master_item_with_photo_and_categories()
     {
