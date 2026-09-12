@@ -9,13 +9,13 @@
                     <i class="bi bi-arrow-left"></i> Kembali ke Daftar Kategori
                 </a>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{url('kategori-items/export-pdf/'.$kategori->id)}}" class="btn btn-danger btn-sm" target="_blank">
+                    <a href="{{url('kategori-items/export-pdf/'.$kategori->id)}}" class="btn btn-danger btn-sm btn-export-pdf" target="_blank">
                         <i class="bi bi-file-earmark-pdf"></i> Download PDF
                     </a>
                     <a class="btn btn-info btn-sm text-white" href="{{url('kategori-items/form/edit')}}/{{$kategori->id}}">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <a class="btn btn-danger btn-sm" href="{{url('kategori-items/delete')}}/{{$kategori->id}}" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');">
+                    <a class="btn btn-danger btn-sm btn-confirm-delete" href="{{url('kategori-items/delete')}}/{{$kategori->id}}">
                         <i class="bi bi-trash"></i> Delete
                     </a>
                 </div>

@@ -12,7 +12,7 @@
                     <a class="btn btn-info btn-sm text-white" href="{{url('master-items/form/edit')}}/{{$data->id}}">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <a class="btn btn-danger btn-sm" href="{{url('master-items/delete')}}/{{$data->id}}" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?');">
+                    <a class="btn btn-danger btn-sm btn-confirm-delete" href="{{url('master-items/delete')}}/{{$data->id}}">
                         <i class="bi bi-trash"></i> Hapus
                     </a>
                 </div>

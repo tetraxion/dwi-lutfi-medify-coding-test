@@ -13,7 +13,7 @@
                     <a href="{{url('master-items/form/new')}}" class="btn btn-secondary btn-sm">
                         <i class="bi bi-plus-lg"></i> Item Baru
                     </a>
-                    <a href="{{url('master-items/export-excel')}}" class="btn btn-success btn-sm">
+                    <a href="{{url('master-items/export-excel')}}" class="btn btn-success btn-sm btn-export-excel">
                         <i class="bi bi-file-earmark-excel"></i> Export Excel
                     </a>
                 </div>
