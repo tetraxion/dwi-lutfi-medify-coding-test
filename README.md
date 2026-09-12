@@ -16,6 +16,10 @@ dwi-lutfi-medify-coding-test/
 ├── app/
 │   ├── Http/
 │   │   └── Controllers/
+│   │       ├── Auth/
+│   │       │   ├── LoginController.php          # Controller Autentikasi Login & Logout
+│   │       │   ├── RegisterController.php       # Controller Pendaftaran User Baru
+│   │       │   └── ForgotPasswordController.php
 │   │       ├── HomeController.php
 │   │       ├── MasterItemsController.php        # Controller CRUD Master Items & Excel Export
 │   │       └── KategoriItemsController.php      # Controller CRUD Kategori & PDF Export
@@ -40,8 +44,11 @@ dwi-lutfi-medify-coding-test/
 │   ├── sass/
 │   │   └── app.scss                             # Modern Design System (Plus Jakarta Sans, Compact UI)
 │   └── views/
+│       ├── auth/
+│       │   ├── login.blade.php                  # Halaman Login + Brand Logo + Eye Toggle Password
+│       │   └── register.blade.php               # Halaman Register + Brand Logo + Eye Toggle
 │       ├── layouts/
-│       │   └── app.blade.php                    # Layout utama + Navbar + SweetAlert2 Engine
+│       │   └── app.blade.php                    # Layout utama + Navbar Auth + SweetAlert2 Engine
 │       ├── master_items/
 │       │   ├── index/
 │       │   │   ├── index.blade.php              # Halaman Index Master Items
@@ -51,8 +58,10 @@ dwi-lutfi-medify-coding-test/
 │       │   ├── form/
 │       │   │   ├── index.blade.php
 │       │   │   └── form.blade.php               # Form Tambah/Edit + Foto Upload + Multi Kategori
-│       │   └── single/
-│       │       └── index.blade.php              # Detail Item Single View
+│       │   ├── single/
+│       │   │   └── index.blade.php              # Detail Item Single View
+│       │   └── excel/
+│       │       └── template.blade.php           # Template Styled Spreadsheet Excel (.xls)
 │       └── kategori_items/
 │           ├── index/
 │           │   ├── index.blade.php              # Halaman Index Kategori
@@ -111,8 +120,9 @@ dwi-lutfi-medify-coding-test/
 - Mencetak detail Kategori, Kode Kategori, Tabel Daftar Item terhubung, dan Footer tanggal/waktu pencetakan (`Dicetak pada: dd-mm-yyyy hh:mm:ss`).
 - Dilengkapi konfirmasi SweetAlert2 modal sebelum mengunduh PDF.
 
-### 5. Export Excel Master Items
-- Mengunduh data dalam format CSV UTF-8 BOM yang langsung dapat dibuka di MS Excel secara rapi.
+### 5. Export Excel Master Items (Styled Spreadsheet)
+- Mengunduh data dalam format Spreadsheet Excel (`.xls`) profesional dengan desain bermerek.
+- **Styling Premium**: Header banner dark slate (`#1e293b`), timestamp pencetakan, zebra striping baris (`#f8fafc`), format mata uang Rupiah (`Rp 15.000`), persen laba (`20%`), border rapi, & baris **Total Keseluruhan** di bagian footer.
 - Memuat 7 kolom sesuai ketentuan:
   1. `No`
   2. `Nama kategori` (terpisah koma)
