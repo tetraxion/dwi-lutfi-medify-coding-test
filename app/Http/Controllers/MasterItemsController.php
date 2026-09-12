@@ -24,7 +24,7 @@ class MasterItemsController extends Controller
         $data_search = MasterItem::with('kategoriItems');
 
         if (!empty($kode)) {
-            $data_search = $data_search->where('kode', $kode);
+            $data_search = $data_search->where('kode', 'LIKE', '%' . $kode . '%');
         }
         if (!empty($nama)) {
             $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
