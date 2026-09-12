@@ -2,14 +2,24 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
-        <div class="col-md-6">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-success text-white text-center py-3">
-                    <h4 class="mb-0"><i class="bi bi-person-plus me-2"></i>{{ __('Register') }}</h4>
-                </div>
-
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        @if(file_exists(public_path('images/logo.jpg')))
+                            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" height="65" class="mb-3 rounded-3 shadow-sm p-1 bg-white border" style="object-fit: contain; max-width: 100%;">
+                        @elseif(file_exists(public_path('images/logo.png')))
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo" height="65" class="mb-3 rounded-3 shadow-sm p-1 bg-white border" style="object-fit: contain; max-width: 100%;">
+                        @else
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-2">
+                                <i class="bi bi-box-seam-fill fs-2"></i>
+                            </div>
+                        @endif
+                        <h5 class="fw-bold text-dark mb-1">Daftar Akun Baru</h5>
+                        <small class="text-muted">Buat akun untuk mengakses Medify App</small>
+                    </div>
+
                     <form method="POST" action="{{ route('register') }}" id="register-form">
                         @csrf
 
@@ -17,10 +27,12 @@
                             <label for="name" class="form-label">
                                 <i class="bi bi-person me-1"></i>{{ __('Name') }}
                             </label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Masukkan nama lengkap">
-
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                                <input id="name" type="text" class="form-control border-start-0 @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Masukkan nama lengkap">
+                            </div>
                             @error('name')
-                                <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
@@ -30,10 +42,12 @@
                             <label for="email" class="form-label">
                                 <i class="bi bi-envelope me-1"></i>{{ __('Email Address') }}
                             </label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Masukkan email Anda">
-
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                <input id="email" type="email" class="form-control border-start-0 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Masukkan email Anda">
+                            </div>
                             @error('email')
-                                <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
@@ -43,10 +57,15 @@
                             <label for="password" class="form-label">
                                 <i class="bi bi-lock me-1"></i>{{ __('Password') }}
                             </label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Minimal 8 karakter">
-
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                <input id="password" type="password" class="form-control border-start-0 border-end-0 @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Minimal 8 karakter">
+                                <button class="btn btn-outline-secondary border-start-0 bg-light px-3" type="button" id="togglePassword" title="Tampilkan/Sembunyikan Password">
+                                    <i class="bi bi-eye text-secondary" id="eyeIcon"></i>
+                                </button>
+                            </div>
                             @error('password')
-                                <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
@@ -56,11 +75,17 @@
                             <label for="password-confirm" class="form-label">
                                 <i class="bi bi-lock-fill me-1"></i>{{ __('Confirm Password') }}
                             </label>
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi password">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock-fill text-muted"></i></span>
+                                <input id="password-confirm" type="password" class="form-control border-start-0 border-end-0" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi password">
+                                <button class="btn btn-outline-secondary border-start-0 bg-light px-3" type="button" id="togglePasswordConfirm" title="Tampilkan/Sembunyikan Password">
+                                    <i class="bi bi-eye text-secondary" id="eyeIconConfirm"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-success py-2">
+                            <button type="submit" class="btn btn-primary py-2 fw-semibold">
                                 <i class="bi bi-person-plus me-1"></i>{{ __('Register') }}
                             </button>
                         </div>
@@ -68,8 +93,8 @@
                         <hr class="my-3">
                         <div class="text-center">
                             <small class="text-muted">Sudah punya akun?</small>
-                            <a href="{{ route('login') }}" class="text-decoration-none">
-                                <strong>Login Sekarang</strong>
+                            <a href="{{ route('login') }}" class="text-decoration-none ms-1 fw-semibold text-primary">
+                                Login Sekarang
                             </a>
                         </div>
                     </form>
@@ -82,6 +107,36 @@
 
 @section('js')
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Password eye toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (togglePassword && passwordInput && eyeIcon) {
+            togglePassword.addEventListener('click', function () {
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                eyeIcon.classList.toggle('bi-eye');
+                eyeIcon.classList.toggle('bi-eye-slash');
+            });
+        }
+
+        // Confirm Password eye toggle
+        const togglePasswordConfirm = document.getElementById('togglePasswordConfirm');
+        const passwordConfirmInput = document.getElementById('password-confirm');
+        const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+
+        if (togglePasswordConfirm && passwordConfirmInput && eyeIconConfirm) {
+            togglePasswordConfirm.addEventListener('click', function () {
+                const isPassword = passwordConfirmInput.getAttribute('type') === 'password';
+                passwordConfirmInput.setAttribute('type', isPassword ? 'text' : 'password');
+                eyeIconConfirm.classList.toggle('bi-eye');
+                eyeIconConfirm.classList.toggle('bi-eye-slash');
+            });
+        }
+    });
+
     // Show validation errors with SweetAlert
     @if($errors->any())
         let errorMessages = '';

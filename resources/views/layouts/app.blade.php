@@ -24,6 +24,7 @@
 
 <body>
     <div id="app">
+        @auth
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm py-3">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url('/') }}">
@@ -57,20 +58,6 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
@@ -86,11 +73,11 @@
                                 </form>
                             </div>
                         </li>
-                        @endguest
                     </ul>
                 </div>
             </div>
         </nav>
+        @endauth
 
         <main class="py-3">
             @yield('content')
